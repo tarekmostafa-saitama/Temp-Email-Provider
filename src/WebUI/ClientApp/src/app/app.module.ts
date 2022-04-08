@@ -10,6 +10,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { AppRoutingModule } from './app-routing.module';
 
 import { JwtTokenInterceptor } from './Shared/Interceptors/jwt-token-interceptor';
+import { ErrorHandlingInterceptor } from './Shared/Interceptors/error-handling-interceptor';
 
 @NgModule({
   declarations: [
@@ -20,14 +21,13 @@ import { JwtTokenInterceptor } from './Shared/Interceptors/jwt-token-interceptor
     FontAwesomeModule,
     HttpClientModule,
     FormsModule,
- 
     AppRoutingModule,
     BrowserAnimationsModule,
     ModalModule.forRoot(),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtTokenInterceptor, multi: true },
-    //{ provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlingInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

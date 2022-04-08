@@ -15,8 +15,8 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IAccountClient {
-    getToken(model: LoginUserRequest): Observable<FileResponse>;
-    refreshToken(model: RefreshRequest): Observable<FileResponse>;
+    getToken(model: LoginUserRequest): Observable<AuthenticateResponse>;
+    refreshToken(model: RefreshRequest): Observable<AuthenticateResponse>;
 }
 
 @Injectable({
@@ -32,7 +32,7 @@ export class AccountClient implements IAccountClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getToken(model: LoginUserRequest) : Observable<FileResponse> {
+    getToken(model: LoginUserRequest) : Observable<AuthenticateResponse> {
         let url_ = this.baseUrl + "/api/Account/Get-Token";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -44,7 +44,7 @@ export class AccountClient implements IAccountClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -55,34 +55,36 @@ export class AccountClient implements IAccountClient {
                 try {
                     return this.processGetToken(<any>response_);
                 } catch (e) {
-                    return <Observable<FileResponse>><any>_observableThrow(e);
+                    return <Observable<AuthenticateResponse>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<FileResponse>><any>_observableThrow(response_);
+                return <Observable<AuthenticateResponse>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetToken(response: HttpResponseBase): Observable<FileResponse> {
+    protected processGetToken(response: HttpResponseBase): Observable<AuthenticateResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return _observableOf({ fileName: fileName, data: <any>responseBlob, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthenticateResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<FileResponse>(<any>null);
+        return _observableOf<AuthenticateResponse>(<any>null);
     }
 
-    refreshToken(model: RefreshRequest) : Observable<FileResponse> {
+    refreshToken(model: RefreshRequest) : Observable<AuthenticateResponse> {
         let url_ = this.baseUrl + "/api/Account/Refresh-Token";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -94,7 +96,7 @@ export class AccountClient implements IAccountClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -105,32 +107,82 @@ export class AccountClient implements IAccountClient {
                 try {
                     return this.processRefreshToken(<any>response_);
                 } catch (e) {
-                    return <Observable<FileResponse>><any>_observableThrow(e);
+                    return <Observable<AuthenticateResponse>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<FileResponse>><any>_observableThrow(response_);
+                return <Observable<AuthenticateResponse>><any>_observableThrow(response_);
         }));
     }
 
-    protected processRefreshToken(response: HttpResponseBase): Observable<FileResponse> {
+    protected processRefreshToken(response: HttpResponseBase): Observable<AuthenticateResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return _observableOf({ fileName: fileName, data: <any>responseBlob, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthenticateResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<FileResponse>(<any>null);
+        return _observableOf<AuthenticateResponse>(<any>null);
     }
+}
+
+export class AuthenticateResponse implements IAuthenticateResponse {
+    isSuccess?: boolean;
+    error?: string | undefined;
+    accessToken?: string | undefined;
+    refreshToken?: string | undefined;
+
+    constructor(data?: IAuthenticateResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isSuccess = _data["isSuccess"];
+            this.error = _data["error"];
+            this.accessToken = _data["accessToken"];
+            this.refreshToken = _data["refreshToken"];
+        }
+    }
+
+    static fromJS(data: any): AuthenticateResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticateResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isSuccess"] = this.isSuccess;
+        data["error"] = this.error;
+        data["accessToken"] = this.accessToken;
+        data["refreshToken"] = this.refreshToken;
+        return data; 
+    }
+}
+
+export interface IAuthenticateResponse {
+    isSuccess?: boolean;
+    error?: string | undefined;
+    accessToken?: string | undefined;
+    refreshToken?: string | undefined;
 }
 
 export class LoginUserRequest implements ILoginUserRequest {
@@ -207,13 +259,6 @@ export class RefreshRequest implements IRefreshRequest {
 
 export interface IRefreshRequest {
     refreshToken?: string | undefined;
-}
-
-export interface FileResponse {
-    data: Blob;
-    status: number;
-    fileName?: string;
-    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {

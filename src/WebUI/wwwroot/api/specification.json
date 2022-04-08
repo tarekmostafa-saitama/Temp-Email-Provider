@@ -28,10 +28,9 @@
           "200": {
             "description": "",
             "content": {
-              "application/octet-stream": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/AuthenticateResponse"
                 }
               }
             }
@@ -61,10 +60,9 @@
           "200": {
             "description": "",
             "content": {
-              "application/octet-stream": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/AuthenticateResponse"
                 }
               }
             }
@@ -75,6 +73,27 @@
   },
   "components": {
     "schemas": {
+      "AuthenticateResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSuccess": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "LoginUserRequest": {
         "type": "object",
         "additionalProperties": false,

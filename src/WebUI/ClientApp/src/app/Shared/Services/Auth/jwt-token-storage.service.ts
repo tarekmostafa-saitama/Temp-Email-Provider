@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AuthResponse } from "../../Models/auth-response";
+import { AuthenticateResponse } from "src/app/web-api-client";
 
 @Injectable({
   providedIn: "root",
@@ -12,9 +12,9 @@ export class JwtTokenStorageService {
     this.SetupAuthTokens();
   }
 
-  public SetAuthTokens(tokenResponse: AuthResponse): void {
-    localStorage.setItem("access-token", tokenResponse.AccessToken);
-    localStorage.setItem("refresh-token", tokenResponse.RefreshToken);
+  public SetAuthTokens(tokenResponse: AuthenticateResponse): void {
+    localStorage.setItem("access-token", tokenResponse.accessToken);
+    localStorage.setItem("refresh-token", tokenResponse.refreshToken);
     this.SetupAuthTokens();
   }
   private SetupAuthTokens() {
