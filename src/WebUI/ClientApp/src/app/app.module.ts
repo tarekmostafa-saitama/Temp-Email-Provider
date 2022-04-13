@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { JwtTokenInterceptor } from './Shared/Interceptors/jwt-token-interceptor';
 import { ErrorHandlingInterceptor } from './Shared/Interceptors/error-handling-interceptor';
+import { AuthModule } from './AuthModule/auth.module';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { ErrorHandlingInterceptor } from './Shared/Interceptors/error-handling-i
     AppRoutingModule,
     BrowserAnimationsModule,
     ModalModule.forRoot(),
+    AuthModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtTokenInterceptor, multi: true },
