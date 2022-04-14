@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
         if (x.isSuccess) {
           this.jwtTokenStorageService.SetAuthTokens(x);
           this.toastrService.Success("", "Success Register Proccess");
-          this.router.navigate(["/home"]);
+          this.router.navigate(["/user/home"]);
         } else {
           this.errorMessage = x.error;
           this.toastrService.Error("", "Failed Register Proccess");

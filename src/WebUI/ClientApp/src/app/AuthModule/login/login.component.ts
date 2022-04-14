@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
         if(x.isSuccess){
           this.jwtTokenStorageService.SetAuthTokens(x);
           this.toastrService.Success("","Success Login Proccess");
-          this.router.navigate(["/home"]);
+          this.router.navigate(["/user/home"]);
         }else{
           this.errorMessage = x.error;
           this.toastrService.Error("", "Failed Login Proccess");

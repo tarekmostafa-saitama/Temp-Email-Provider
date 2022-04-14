@@ -6,6 +6,13 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 
 const routes: Routes = [
+  
+  {
+    path: "",
+    component: LoginComponent,
+    canActivate: [UserNotLoggedInGuard],
+    pathMatch: "full",
+  },
   {
     path: "login",
     component: LoginComponent,
@@ -15,7 +22,7 @@ const routes: Routes = [
     path: "register",
     component: RegisterComponent,
     canActivate: [UserNotLoggedInGuard],
-  },
+  }
 ];
 
 @NgModule({

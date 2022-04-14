@@ -21,7 +21,12 @@ export class UserAuthService {
   public login(model: LoginUserRequest): Observable<AuthenticateResponse> {
     return this.accountClient.getToken(model);
   }
-  public register(model: RegisterUserRequest): Observable<AuthenticateResponse> {
+  public logout(): void {
+    this.jwtTokenStorageService.ClearUserData();
+  }
+  public register(
+    model: RegisterUserRequest
+  ): Observable<AuthenticateResponse> {
     return this.accountClient.register(model);
   }
 }

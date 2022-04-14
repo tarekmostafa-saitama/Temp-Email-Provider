@@ -23,7 +23,7 @@ export class UserNotLoggedInGuard implements CanActivate {
        const token = this.userAuthService.getUserAccessToken();
        if (token) {
          // logged in so redirect to home page
-         this.router.navigate(["/home"]);
+         this.router.navigate(["/user/home"]);
          return false;
        }
 

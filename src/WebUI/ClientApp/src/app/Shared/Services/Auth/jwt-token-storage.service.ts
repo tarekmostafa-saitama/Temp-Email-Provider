@@ -17,6 +17,11 @@ export class JwtTokenStorageService {
     localStorage.setItem("refresh-token", tokenResponse.refreshToken);
     this.SetupAuthTokens();
   }
+  public ClearUserData() {
+    localStorage.removeItem("access-token");
+    localStorage.removeItem("refresh-token");
+    this.SetupAuthTokens();
+  }
   private SetupAuthTokens() {
     this.jwtLoggedToken = localStorage.getItem("access-token");
     this.jwtRefreshToken = localStorage.getItem("refresh-token");
