@@ -26,7 +26,7 @@
             "assets": [
               "src/assets"
             ],
-            "styles": ["node_modules/ngx-spinner/animations/ball-scale-multiple.css","src/assets/css/vendor.min.css", "src/assets/css/app.min.css"],
+            "styles": ["node_modules/ngx-spinner/animations/ball-scale-multiple.css","node_modules/ngx-toastr/toastr.css","src/assets/css/vendor.min.css", "src/assets/css/app.min.css"],
             "scripts": ["src/assets/js/vendor.min.js", "src/assets/js/app.min.js"],
             "vendorChunk": true,
             "extractLicenses": false,

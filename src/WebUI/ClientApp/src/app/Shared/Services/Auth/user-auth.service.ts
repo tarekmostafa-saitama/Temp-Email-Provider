@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AccountClient, AuthenticateResponse, LoginUserRequest } from 'src/app/web-api-client';
+import { AccountClient, AuthenticateResponse, LoginUserRequest, RegisterUserRequest } from 'src/app/web-api-client';
 import { JwtTokenStorageService } from './jwt-token-storage.service';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class UserAuthService {
   public login(model: LoginUserRequest): Observable<AuthenticateResponse> {
     return this.accountClient.getToken(model);
   }
-  public register(model: LoginUserRequest): Observable<AuthenticateResponse> {
-    return this.accountClient.getToken(model);
+  public register(model: RegisterUserRequest): Observable<AuthenticateResponse> {
+    return this.accountClient.register(model);
   }
 }

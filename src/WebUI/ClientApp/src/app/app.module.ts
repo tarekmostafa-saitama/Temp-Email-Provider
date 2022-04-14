@@ -15,6 +15,8 @@ import { AuthModule } from "./AuthModule/auth.module";
 import { API_BASE_URL } from "./web-api-client";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { HttpSpinnerInterceptor } from "./Shared/Interceptors/http-spinner-interceptor";
+import { UserModule } from './user/user.module';
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +30,8 @@ import { HttpSpinnerInterceptor } from "./Shared/Interceptors/http-spinner-inter
     ModalModule.forRoot(),
     AuthModule,
     NgxSpinnerModule,
+    ToastrModule.forRoot(),
+    UserModule,
   ],
   providers: [
     {

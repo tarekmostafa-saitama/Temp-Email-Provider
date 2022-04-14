@@ -9,6 +9,11 @@ namespace CleanArchitecture.Application.Requests.Auth.Commands;
 public class RegisterUserCommand : IRequest<AuthenticateResponse>
 {
     public  RegisterUserRequest RegisterModel { get; set; }
+
+    public RegisterUserCommand(RegisterUserRequest model)
+    {
+        RegisterModel = model;
+    }
 }
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, AuthenticateResponse>
@@ -42,7 +47,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, A
 
         if (!result.Succeeded)
         {
-            authObj.Error = result.Errors.FirstOrDefault()?.ToString(); 
+            authObj.Error = result.Errors.FirstOrDefault()?.Description; 
             return authObj;
         }
         await _userManager.AddToRoleAsync(newUser, request.RegisterModel.Role.ToString());

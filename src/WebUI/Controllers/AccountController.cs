@@ -20,4 +20,13 @@ public class AccountController : ApiControllerBase
         var result = await Mediator.Send(new RefreshCommand(model));
         return Ok(result);
     }
+    [Route("api/Account/Register")]
+    [HttpPost]
+    public async Task<ActionResult<AuthenticateResponse>> Register(RegisterUserRequest model)
+    {
+        var result = await Mediator.Send(new RegisterUserCommand(model));
+        if(result.IsSuccess)
+            result = await Mediator.Send(new LoginUserCommand(new LoginUserRequest(){Email = model.Email,Password = model.Password}));
+        return Ok(result);
+    }
 }

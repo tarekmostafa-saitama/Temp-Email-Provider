@@ -17,6 +17,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export interface IAccountClient {
     getToken(model: LoginUserRequest): Observable<AuthenticateResponse>;
     refreshToken(model: RefreshRequest): Observable<AuthenticateResponse>;
+    register(model: RegisterUserRequest): Observable<AuthenticateResponse>;
 }
 
 @Injectable({
@@ -115,6 +116,58 @@ export class AccountClient implements IAccountClient {
     }
 
     protected processRefreshToken(response: HttpResponseBase): Observable<AuthenticateResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthenticateResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AuthenticateResponse>(<any>null);
+    }
+
+    register(model: RegisterUserRequest) : Observable<AuthenticateResponse> {
+        let url_ = this.baseUrl + "/api/Account/Register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(model);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegister(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegister(<any>response_);
+                } catch (e) {
+                    return <Observable<AuthenticateResponse>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AuthenticateResponse>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processRegister(response: HttpResponseBase): Observable<AuthenticateResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -259,6 +312,59 @@ export class RefreshRequest implements IRefreshRequest {
 
 export interface IRefreshRequest {
     refreshToken?: string | undefined;
+}
+
+export class RegisterUserRequest implements IRegisterUserRequest {
+    fullName?: string | undefined;
+    email?: string | undefined;
+    password?: string | undefined;
+    role?: Role;
+
+    constructor(data?: IRegisterUserRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullName = _data["fullName"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): RegisterUserRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterUserRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullName"] = this.fullName;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["role"] = this.role;
+        return data; 
+    }
+}
+
+export interface IRegisterUserRequest {
+    fullName?: string | undefined;
+    email?: string | undefined;
+    password?: string | undefined;
+    role?: Role;
+}
+
+export enum Role {
+    User = 0,
+    Admin = 1,
 }
 
 export class SwaggerException extends Error {
