@@ -9,7 +9,8 @@ import { JwtTokenStorageService } from './jwt-token-storage.service';
 export class UserAuthService {
   constructor(
     private jwtTokenStorageService: JwtTokenStorageService,
-    private accountClient: AccountClient) {}
+    private accountClient: AccountClient
+  ) {}
 
   public getUserAccessToken(): string {
     return this.jwtTokenStorageService.jwtLoggedToken;
@@ -18,6 +19,9 @@ export class UserAuthService {
     return this.jwtTokenStorageService.jwtRefreshToken;
   }
   public login(model: LoginUserRequest): Observable<AuthenticateResponse> {
+    return this.accountClient.getToken(model);
+  }
+  public register(model: LoginUserRequest): Observable<AuthenticateResponse> {
     return this.accountClient.getToken(model);
   }
 }

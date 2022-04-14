@@ -31,5 +31,6 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
 
 function throwError(err: HttpErrorResponse): Observable<never>
 {
+  console.log(err);
     throw new Error("Function not implemented.");
 }

@@ -62,6 +62,10 @@ public class Startup
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
+        services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
+        {
+            builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+        }));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,6 +98,8 @@ public class Startup
         });
 
         app.UseRouting();
+
+        app.UseCors("ApiCorsPolicy");
 
         app.UseAuthentication();
         app.UseAuthorization();
