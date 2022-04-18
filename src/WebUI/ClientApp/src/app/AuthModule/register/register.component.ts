@@ -41,6 +41,7 @@ export class RegisterComponent implements OnInit {
       .subscribe((x) => {
         if (x.isSuccess) {
           this.jwtTokenStorageService.SetAuthTokens(x);
+          this.userAuthService.startRefreshTokenTimer();
           this.toastrService.Success("", "Success Register Proccess");
           this.router.navigate(["/user/home"]);
         } else {

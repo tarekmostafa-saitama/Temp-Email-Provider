@@ -321,6 +321,13 @@
             "items": {
               "$ref": "#/components/schemas/KeyValuePairOfStringAndString"
             }
+          },
+          "parsedResult": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfStringAndMimeMessage"
+            }
           }
         }
       },
@@ -333,6 +340,937 @@
           },
           "value": {
             "type": "string"
+          }
+        }
+      },
+      "KeyValuePairOfStringAndMimeMessage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/MimeMessage"
+          }
+        }
+      },
+      "MimeMessage": {
+        "type": "object",
+        "description": "A MIME message.",
+        "additionalProperties": false,
+        "properties": {
+          "headers": {
+            "type": "array",
+            "description": "Get the list of headers.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Header"
+            }
+          },
+          "importance": {
+            "description": "Get or set the value of the Importance header.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MessageImportance"
+              }
+            ]
+          },
+          "priority": {
+            "description": "Get or set the value of the Priority header.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MessagePriority"
+              }
+            ]
+          },
+          "xPriority": {
+            "description": "Get or set the value of the X-Priority header.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/XMessagePriority"
+              }
+            ]
+          },
+          "sender": {
+            "description": "Get or set the address in the Sender header.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MailboxAddress"
+              }
+            ]
+          },
+          "resentSender": {
+            "description": "Get or set the address in the Resent-Sender header.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MailboxAddress"
+              }
+            ]
+          },
+          "from": {
+            "type": "array",
+            "description": "Get the list of addresses in the From header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "resentFrom": {
+            "type": "array",
+            "description": "Get the list of addresses in the Resent-From header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "replyTo": {
+            "type": "array",
+            "description": "Get the list of addresses in the Reply-To header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "resentReplyTo": {
+            "type": "array",
+            "description": "Get the list of addresses in the Resent-Reply-To header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "to": {
+            "type": "array",
+            "description": "Get the list of addresses in the To header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "resentTo": {
+            "type": "array",
+            "description": "Get the list of addresses in the Resent-To header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "cc": {
+            "type": "array",
+            "description": "Get the list of addresses in the Cc header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "resentCc": {
+            "type": "array",
+            "description": "Get the list of addresses in the Resent-Cc header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "bcc": {
+            "type": "array",
+            "description": "Get the list of addresses in the Bcc header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "resentBcc": {
+            "type": "array",
+            "description": "Get the list of addresses in the Resent-Bcc header.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/InternetAddress"
+            }
+          },
+          "subject": {
+            "type": "string",
+            "description": "Get or set the subject of the message.",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "description": "Get or set the date of the message.",
+            "format": "date-time"
+          },
+          "resentDate": {
+            "type": "string",
+            "description": "Get or set the Resent-Date of the message.",
+            "format": "date-time"
+          },
+          "references": {
+            "type": "array",
+            "description": "Get the list of references to other messages.",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "inReplyTo": {
+            "type": "string",
+            "description": "Get or set the Message-Id that this message is replying to.",
+            "nullable": true
+          },
+          "messageId": {
+            "type": "string",
+            "description": "Get or set the message identifier.",
+            "nullable": true
+          },
+          "resentMessageId": {
+            "type": "string",
+            "description": "Get or set the Resent-Message-Id header.",
+            "nullable": true
+          },
+          "mimeVersion": {
+            "type": "string",
+            "description": "Get or set the MIME-Version.",
+            "nullable": true
+          },
+          "body": {
+            "description": "Get or set the body of the message.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MimeEntity"
+              }
+            ]
+          },
+          "textBody": {
+            "type": "string",
+            "description": "Get the text body of the message if it exists.",
+            "nullable": true
+          },
+          "htmlBody": {
+            "type": "string",
+            "description": "Get the html body of the message if it exists.",
+            "nullable": true
+          },
+          "bodyParts": {
+            "type": "array",
+            "description": "Get the body parts of the message.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MimeEntity"
+            }
+          },
+          "attachments": {
+            "type": "array",
+            "description": "Get the attachments.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MimeEntity"
+            }
+          }
+        }
+      },
+      "Header": {
+        "type": "object",
+        "description": "A class representing a Message or MIME header.",
+        "additionalProperties": false,
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "description": "Get the stream offset of the beginning of the header.",
+            "format": "int64",
+            "nullable": true
+          },
+          "field": {
+            "type": "string",
+            "description": "Get the name of the header field.",
+            "nullable": true
+          },
+          "id": {
+            "description": "Get the header identifier.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/HeaderId"
+              }
+            ]
+          },
+          "rawField": {
+            "type": "string",
+            "description": "Get the raw field name of the header.",
+            "format": "byte",
+            "nullable": true
+          },
+          "rawValue": {
+            "type": "string",
+            "description": "Get the raw value of the header.",
+            "format": "byte",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "Get or sets the header value.",
+            "nullable": true
+          }
+        }
+      },
+      "HeaderId": {
+        "type": "integer",
+        "description": "An enumeration of common header fields.",
+        "x-enumNames": [
+          "AcceptLanguage",
+          "AdHoc",
+          "AlternateRecipient",
+          "ApparentlyTo",
+          "Approved",
+          "ArcAuthenticationResults",
+          "ArcMessageSignature",
+          "ArcSeal",
+          "Archive",
+          "ArchivedAt",
+          "Article",
+          "AuthenticationResults",
+          "Autocrypt",
+          "AutocryptGossip",
+          "AutocryptSetupMessage",
+          "Autoforwarded",
+          "AutoSubmitted",
+          "Autosubmitted",
+          "Base",
+          "Bcc",
+          "Body",
+          "Bytes",
+          "Cc",
+          "Comments",
+          "ContentAlternative",
+          "ContentBase",
+          "ContentClass",
+          "ContentDescription",
+          "ContentDisposition",
+          "ContentDuration",
+          "ContentFeatures",
+          "ContentId",
+          "ContentIdentifier",
+          "ContentLanguage",
+          "ContentLength",
+          "ContentLocation",
+          "ContentMd5",
+          "ContentReturn",
+          "ContentTransferEncoding",
+          "ContentTranslationType",
+          "ContentType",
+          "Control",
+          "Conversion",
+          "ConversionWithLoss",
+          "Date",
+          "DateReceived",
+          "DeferredDelivery",
+          "DeliveryDate",
+          "DiscloseRecipients",
+          "DispositionNotificationOptions",
+          "DispositionNotificationTo",
+          "Distribution",
+          "DkimSignature",
+          "DomainKeySignature",
+          "Encoding",
+          "Encrypted",
+          "Expires",
+          "ExpiryDate",
+          "FollowupTo",
+          "From",
+          "GenerateDeliveryReport",
+          "Importance",
+          "InjectionDate",
+          "InjectionInfo",
+          "InReplyTo",
+          "Keywords",
+          "Language",
+          "LatestDeliveryTime",
+          "Lines",
+          "ListArchive",
+          "ListHelp",
+          "ListId",
+          "ListOwner",
+          "ListPost",
+          "ListSubscribe",
+          "ListUnsubscribe",
+          "ListUnsubscribePost",
+          "MessageId",
+          "MimeVersion",
+          "Newsgroups",
+          "NntpPostingHost",
+          "Organization",
+          "OriginalFrom",
+          "OriginalMessageId",
+          "OriginalRecipient",
+          "OriginalReturnAddress",
+          "OriginalSubject",
+          "Path",
+          "Precedence",
+          "PreventNonDeliveryReport",
+          "Priority",
+          "Received",
+          "ReceivedSPF",
+          "References",
+          "RelayVersion",
+          "ReplyBy",
+          "ReplyTo",
+          "RequireRecipientValidSince",
+          "ResentBcc",
+          "ResentCc",
+          "ResentDate",
+          "ResentFrom",
+          "ResentMessageId",
+          "ResentReplyTo",
+          "ResentSender",
+          "ResentTo",
+          "ReturnPath",
+          "ReturnReceiptTo",
+          "SeeAlso",
+          "Sender",
+          "Sensitivity",
+          "Solicitation",
+          "Status",
+          "Subject",
+          "Summary",
+          "Supersedes",
+          "TLSRequired",
+          "To",
+          "UserAgent",
+          "X400ContentIdentifier",
+          "X400ContentReturn",
+          "X400ContentType",
+          "X400MTSIdentifier",
+          "X400Originator",
+          "X400Received",
+          "X400Recipients",
+          "X400Trace",
+          "XMailer",
+          "XMSMailPriority",
+          "XPriority",
+          "XStatus",
+          "Unknown"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          129,
+          130,
+          -1
+        ]
+      },
+      "MessageImportance": {
+        "type": "integer",
+        "description": "An enumeration of message importance values.",
+        "x-enumNames": [
+          "Low",
+          "Normal",
+          "High"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "MessagePriority": {
+        "type": "integer",
+        "description": "An enumeration of message priority values.",
+        "x-enumNames": [
+          "NonUrgent",
+          "Normal",
+          "Urgent"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "XMessagePriority": {
+        "type": "integer",
+        "description": "An enumeration of X-Priority header values.",
+        "x-enumNames": [
+          "Highest",
+          "High",
+          "Normal",
+          "Low",
+          "Lowest"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "MailboxAddress": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InternetAddress"
+          },
+          {
+            "type": "object",
+            "description": "A mailbox address, as specified by rfc822.",
+            "additionalProperties": false,
+            "properties": {
+              "route": {
+                "type": "array",
+                "description": "Get the mailbox route.",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "address": {
+                "type": "string",
+                "description": "Get or set the mailbox address.",
+                "nullable": true
+              },
+              "localPart": {
+                "type": "string",
+                "description": "Get the local-part of the email address.",
+                "nullable": true
+              },
+              "domain": {
+                "type": "string",
+                "description": "Get the domain of the email address.",
+                "nullable": true
+              },
+              "isInternational": {
+                "type": "boolean",
+                "description": "Get whether or not the address is an international address."
+              }
+            }
+          }
+        ]
+      },
+      "InternetAddress": {
+        "type": "object",
+        "description": "An abstract internet address, as specified by rfc0822.",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "encoding": {
+            "description": "Get or set the character encoding to use when encoding the name of the address.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Encoding"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Get or set the display name of the address.",
+            "nullable": true
+          }
+        }
+      },
+      "Encoding": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "bodyName": {
+            "type": "string"
+          },
+          "encodingName": {
+            "type": "string"
+          },
+          "headerName": {
+            "type": "string"
+          },
+          "webName": {
+            "type": "string"
+          },
+          "windowsCodePage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isBrowserDisplay": {
+            "type": "boolean"
+          },
+          "isBrowserSave": {
+            "type": "boolean"
+          },
+          "isMailNewsDisplay": {
+            "type": "boolean"
+          },
+          "isMailNewsSave": {
+            "type": "boolean"
+          },
+          "isSingleByte": {
+            "type": "boolean"
+          },
+          "encoderFallback": {
+            "$ref": "#/components/schemas/EncoderFallback"
+          },
+          "decoderFallback": {
+            "$ref": "#/components/schemas/DecoderFallback"
+          },
+          "isReadOnly": {
+            "type": "boolean"
+          },
+          "codePage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "EncoderFallback": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
+      },
+      "DecoderFallback": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
+      },
+      "MimeEntity": {
+        "type": "object",
+        "description": "An abstract MIME entity.",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "headers": {
+            "type": "array",
+            "description": "Get the list of headers.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Header"
+            }
+          },
+          "contentDisposition": {
+            "description": "Get or set the content disposition.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ContentDisposition"
+              }
+            ]
+          },
+          "contentType": {
+            "description": "Get the type of the content.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ContentType"
+              }
+            ]
+          },
+          "contentBase": {
+            "type": "string",
+            "description": "Get or set the base content URI.",
+            "format": "uri",
+            "nullable": true
+          },
+          "contentLocation": {
+            "type": "string",
+            "description": "Get or set the content location.",
+            "format": "uri",
+            "nullable": true
+          },
+          "contentId": {
+            "type": "string",
+            "description": "Get or set the content identifier.",
+            "nullable": true
+          },
+          "isAttachment": {
+            "type": "boolean",
+            "description": "Get a value indicating whether this MimePart is an attachment."
+          }
+        }
+      },
+      "ContentDisposition": {
+        "type": "object",
+        "description": "A class representing a Content-Disposition header value.",
+        "additionalProperties": false,
+        "properties": {
+          "disposition": {
+            "type": "string",
+            "description": "Get or set the disposition.",
+            "nullable": true
+          },
+          "isAttachment": {
+            "type": "boolean",
+            "description": "Get or set a value indicating whether the MimePart is an attachment."
+          },
+          "parameters": {
+            "type": "array",
+            "description": "Get the list of parameters on the ContentDisposition.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            }
+          },
+          "fileName": {
+            "type": "string",
+            "description": "Get or set the name of the file.",
+            "nullable": true
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Get or set the creation-date parameter.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "modificationDate": {
+            "type": "string",
+            "description": "Get or set the modification-date parameter.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "readDate": {
+            "type": "string",
+            "description": "Get or set the read-date parameter.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "size": {
+            "type": "integer",
+            "description": "Get or set the size parameter.",
+            "format": "int64",
+            "nullable": true
+          }
+        }
+      },
+      "Parameter": {
+        "type": "object",
+        "description": "A header parameter as found in the Content-Type and Content-Disposition headers.",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Get the parameter name.",
+            "nullable": true
+          },
+          "encoding": {
+            "description": "Get or set the parameter value character encoding.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Encoding"
+              }
+            ]
+          },
+          "encodingMethod": {
+            "description": "Get or set the parameter encoding method to use.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ParameterEncodingMethod"
+              }
+            ]
+          },
+          "alwaysQuote": {
+            "type": "boolean",
+            "description": "Get or set whether the parameter value should always be quoted even if it normally wouldn't need to be."
+          },
+          "value": {
+            "type": "string",
+            "description": "Get or set the parameter value.",
+            "nullable": true
+          }
+        }
+      },
+      "ParameterEncodingMethod": {
+        "type": "integer",
+        "description": "The method to use for encoding Content-Type and Content-Disposition parameter values.",
+        "x-enumNames": [
+          "Default",
+          "Rfc2231",
+          "Rfc2047"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ContentType": {
+        "type": "object",
+        "description": "A class representing a Content-Type header value.",
+        "additionalProperties": false,
+        "properties": {
+          "mediaType": {
+            "type": "string",
+            "description": "Get or set the type of the media.",
+            "nullable": true
+          },
+          "mediaSubtype": {
+            "type": "string",
+            "description": "Get or set the media subtype.",
+            "nullable": true
+          },
+          "parameters": {
+            "type": "array",
+            "description": "Get the list of parameters on the ContentType.",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            }
+          },
+          "boundary": {
+            "type": "string",
+            "description": "Get or set the boundary parameter.",
+            "nullable": true
+          },
+          "charset": {
+            "type": "string",
+            "description": "Get or set the charset parameter.",
+            "nullable": true
+          },
+          "charsetEncoding": {
+            "description": "Get or set the charset parameter as an Encoding.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Encoding"
+              }
+            ]
+          },
+          "format": {
+            "type": "string",
+            "description": "Get or set the format parameter.",
+            "nullable": true
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "Get the simple mime-type.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Get or set the name parameter.",
+            "nullable": true
           }
         }
       }

@@ -1,8 +1,9 @@
 ﻿using CleanArchitecture.Application.Requests.MailBoxes.Models;
 using MediatR;
+using MimeKit;
 using Newtonsoft.Json;
 using RestSharp;
-using RestSharp.Serializers;
+using ContentType = RestSharp.Serializers.ContentType;
 
 namespace CleanArchitecture.Application.Requests.MailBoxes.Queries;
 public  class GetMailboxMailsQuery:IRequest<GetMailBoxMailsResponseModel>
@@ -38,6 +39,28 @@ public class GetMailboxMailsQueryHandler : IRequestHandler<GetMailboxMailsQuery,
         request.AddStringBody(JsonConvert.SerializeObject(idsObject.Result), ContentType.Json);
         RestResponse response = await client.ExecuteAsync(request, cancellationToken);
         var mailsObject = JsonConvert.DeserializeObject<GetMailBoxMailsResponseModel>(response.Content);
+
+        if (mailsObject.Success)
+        {
+            foreach (var pair in mailsObject.Result)
+            {
+                using (var stream = GenerateStreamFromString(pair.Value))
+                {
+                    var message = await MimeMessage.LoadAsync(stream, cancellationToken);
+                    mailsObject.ParsedResult.Add(new KeyValuePair<string, MimeMessage>(pair.Key, message));
+
+                }
+            }
+        }
         return mailsObject;
+    }
+    private static Stream GenerateStreamFromString(string s)
+    {
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(s);
+        writer.Flush();
+        stream.Position = 0;
+        return stream;
     }
 }

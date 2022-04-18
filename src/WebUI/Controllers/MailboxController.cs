@@ -11,7 +11,7 @@ using MimeKit;
 
 namespace CleanArchitecture.WebUI.Controllers;
 
-//[Authorize]
+[Authorize]
 public class MailboxController : ApiControllerBase
 {
     private readonly ISender _sender;
@@ -34,4 +34,5 @@ public class MailboxController : ApiControllerBase
         var result = await Mediator.Send(new GetMailboxMailsQuery(token, name));
         return Ok(result);
     }
+
 }

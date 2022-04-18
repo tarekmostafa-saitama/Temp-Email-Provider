@@ -628,6 +628,7 @@ export class GetMailBoxMailsResponseModel implements IGetMailBoxMailsResponseMod
     success?: boolean;
     errors?: ErrorRepresentation[] | undefined;
     result?: KeyValuePairOfStringAndString[] | undefined;
+    parsedResult?: KeyValuePairOfStringAndMimeMessage[] | undefined;
 
     constructor(data?: IGetMailBoxMailsResponseModel) {
         if (data) {
@@ -650,6 +651,11 @@ export class GetMailBoxMailsResponseModel implements IGetMailBoxMailsResponseMod
                 this.result = [] as any;
                 for (let item of _data["result"])
                     this.result!.push(KeyValuePairOfStringAndString.fromJS(item));
+            }
+            if (Array.isArray(_data["parsedResult"])) {
+                this.parsedResult = [] as any;
+                for (let item of _data["parsedResult"])
+                    this.parsedResult!.push(KeyValuePairOfStringAndMimeMessage.fromJS(item));
             }
         }
     }
@@ -674,6 +680,11 @@ export class GetMailBoxMailsResponseModel implements IGetMailBoxMailsResponseMod
             for (let item of this.result)
                 data["result"].push(item.toJSON());
         }
+        if (Array.isArray(this.parsedResult)) {
+            data["parsedResult"] = [];
+            for (let item of this.parsedResult)
+                data["parsedResult"].push(item.toJSON());
+        }
         return data; 
     }
 }
@@ -682,6 +693,7 @@ export interface IGetMailBoxMailsResponseModel {
     success?: boolean;
     errors?: ErrorRepresentation[] | undefined;
     result?: KeyValuePairOfStringAndString[] | undefined;
+    parsedResult?: KeyValuePairOfStringAndMimeMessage[] | undefined;
 }
 
 export class KeyValuePairOfStringAndString implements IKeyValuePairOfStringAndString {
@@ -722,6 +734,1189 @@ export class KeyValuePairOfStringAndString implements IKeyValuePairOfStringAndSt
 export interface IKeyValuePairOfStringAndString {
     key?: string;
     value?: string;
+}
+
+export class KeyValuePairOfStringAndMimeMessage implements IKeyValuePairOfStringAndMimeMessage {
+    key?: string;
+    value?: MimeMessage;
+
+    constructor(data?: IKeyValuePairOfStringAndMimeMessage) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"];
+            this.value = _data["value"] ? MimeMessage.fromJS(_data["value"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): KeyValuePairOfStringAndMimeMessage {
+        data = typeof data === 'object' ? data : {};
+        let result = new KeyValuePairOfStringAndMimeMessage();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key;
+        data["value"] = this.value ? this.value.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IKeyValuePairOfStringAndMimeMessage {
+    key?: string;
+    value?: MimeMessage;
+}
+
+/** A MIME message. */
+export class MimeMessage implements IMimeMessage {
+    /** Get the list of headers. */
+    headers?: Header[] | undefined;
+    /** Get or set the value of the Importance header. */
+    importance?: MessageImportance;
+    /** Get or set the value of the Priority header. */
+    priority?: MessagePriority;
+    /** Get or set the value of the X-Priority header. */
+    xPriority?: XMessagePriority;
+    /** Get or set the address in the Sender header. */
+    sender?: MailboxAddress | undefined;
+    /** Get or set the address in the Resent-Sender header. */
+    resentSender?: MailboxAddress | undefined;
+    /** Get the list of addresses in the From header. */
+    from?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-From header. */
+    resentFrom?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Reply-To header. */
+    replyTo?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-Reply-To header. */
+    resentReplyTo?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the To header. */
+    to?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-To header. */
+    resentTo?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Cc header. */
+    cc?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-Cc header. */
+    resentCc?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Bcc header. */
+    bcc?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-Bcc header. */
+    resentBcc?: InternetAddress[] | undefined;
+    /** Get or set the subject of the message. */
+    subject?: string | undefined;
+    /** Get or set the date of the message. */
+    date?: Date;
+    /** Get or set the Resent-Date of the message. */
+    resentDate?: Date;
+    /** Get the list of references to other messages. */
+    references?: string[] | undefined;
+    /** Get or set the Message-Id that this message is replying to. */
+    inReplyTo?: string | undefined;
+    /** Get or set the message identifier. */
+    messageId?: string | undefined;
+    /** Get or set the Resent-Message-Id header. */
+    resentMessageId?: string | undefined;
+    /** Get or set the MIME-Version. */
+    mimeVersion?: string | undefined;
+    /** Get or set the body of the message. */
+    body?: MimeEntity | undefined;
+    /** Get the text body of the message if it exists. */
+    textBody?: string | undefined;
+    /** Get the html body of the message if it exists. */
+    htmlBody?: string | undefined;
+    /** Get the body parts of the message. */
+    bodyParts?: MimeEntity[] | undefined;
+    /** Get the attachments. */
+    attachments?: MimeEntity[] | undefined;
+
+    constructor(data?: IMimeMessage) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["headers"])) {
+                this.headers = [] as any;
+                for (let item of _data["headers"])
+                    this.headers!.push(Header.fromJS(item));
+            }
+            this.importance = _data["importance"];
+            this.priority = _data["priority"];
+            this.xPriority = _data["xPriority"];
+            this.sender = _data["sender"] ? MailboxAddress.fromJS(_data["sender"]) : <any>undefined;
+            this.resentSender = _data["resentSender"] ? MailboxAddress.fromJS(_data["resentSender"]) : <any>undefined;
+            if (Array.isArray(_data["from"])) {
+                this.from = [] as any;
+                for (let item of _data["from"])
+                    this.from!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["resentFrom"])) {
+                this.resentFrom = [] as any;
+                for (let item of _data["resentFrom"])
+                    this.resentFrom!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["replyTo"])) {
+                this.replyTo = [] as any;
+                for (let item of _data["replyTo"])
+                    this.replyTo!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["resentReplyTo"])) {
+                this.resentReplyTo = [] as any;
+                for (let item of _data["resentReplyTo"])
+                    this.resentReplyTo!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["to"])) {
+                this.to = [] as any;
+                for (let item of _data["to"])
+                    this.to!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["resentTo"])) {
+                this.resentTo = [] as any;
+                for (let item of _data["resentTo"])
+                    this.resentTo!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["cc"])) {
+                this.cc = [] as any;
+                for (let item of _data["cc"])
+                    this.cc!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["resentCc"])) {
+                this.resentCc = [] as any;
+                for (let item of _data["resentCc"])
+                    this.resentCc!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["bcc"])) {
+                this.bcc = [] as any;
+                for (let item of _data["bcc"])
+                    this.bcc!.push(InternetAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["resentBcc"])) {
+                this.resentBcc = [] as any;
+                for (let item of _data["resentBcc"])
+                    this.resentBcc!.push(InternetAddress.fromJS(item));
+            }
+            this.subject = _data["subject"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.resentDate = _data["resentDate"] ? new Date(_data["resentDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["references"])) {
+                this.references = [] as any;
+                for (let item of _data["references"])
+                    this.references!.push(item);
+            }
+            this.inReplyTo = _data["inReplyTo"];
+            this.messageId = _data["messageId"];
+            this.resentMessageId = _data["resentMessageId"];
+            this.mimeVersion = _data["mimeVersion"];
+            this.body = _data["body"] ? MimeEntity.fromJS(_data["body"]) : <any>undefined;
+            this.textBody = _data["textBody"];
+            this.htmlBody = _data["htmlBody"];
+            if (Array.isArray(_data["bodyParts"])) {
+                this.bodyParts = [] as any;
+                for (let item of _data["bodyParts"])
+                    this.bodyParts!.push(MimeEntity.fromJS(item));
+            }
+            if (Array.isArray(_data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of _data["attachments"])
+                    this.attachments!.push(MimeEntity.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MimeMessage {
+        data = typeof data === 'object' ? data : {};
+        let result = new MimeMessage();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.headers)) {
+            data["headers"] = [];
+            for (let item of this.headers)
+                data["headers"].push(item.toJSON());
+        }
+        data["importance"] = this.importance;
+        data["priority"] = this.priority;
+        data["xPriority"] = this.xPriority;
+        data["sender"] = this.sender ? this.sender.toJSON() : <any>undefined;
+        data["resentSender"] = this.resentSender ? this.resentSender.toJSON() : <any>undefined;
+        if (Array.isArray(this.from)) {
+            data["from"] = [];
+            for (let item of this.from)
+                data["from"].push(item.toJSON());
+        }
+        if (Array.isArray(this.resentFrom)) {
+            data["resentFrom"] = [];
+            for (let item of this.resentFrom)
+                data["resentFrom"].push(item.toJSON());
+        }
+        if (Array.isArray(this.replyTo)) {
+            data["replyTo"] = [];
+            for (let item of this.replyTo)
+                data["replyTo"].push(item.toJSON());
+        }
+        if (Array.isArray(this.resentReplyTo)) {
+            data["resentReplyTo"] = [];
+            for (let item of this.resentReplyTo)
+                data["resentReplyTo"].push(item.toJSON());
+        }
+        if (Array.isArray(this.to)) {
+            data["to"] = [];
+            for (let item of this.to)
+                data["to"].push(item.toJSON());
+        }
+        if (Array.isArray(this.resentTo)) {
+            data["resentTo"] = [];
+            for (let item of this.resentTo)
+                data["resentTo"].push(item.toJSON());
+        }
+        if (Array.isArray(this.cc)) {
+            data["cc"] = [];
+            for (let item of this.cc)
+                data["cc"].push(item.toJSON());
+        }
+        if (Array.isArray(this.resentCc)) {
+            data["resentCc"] = [];
+            for (let item of this.resentCc)
+                data["resentCc"].push(item.toJSON());
+        }
+        if (Array.isArray(this.bcc)) {
+            data["bcc"] = [];
+            for (let item of this.bcc)
+                data["bcc"].push(item.toJSON());
+        }
+        if (Array.isArray(this.resentBcc)) {
+            data["resentBcc"] = [];
+            for (let item of this.resentBcc)
+                data["resentBcc"].push(item.toJSON());
+        }
+        data["subject"] = this.subject;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["resentDate"] = this.resentDate ? this.resentDate.toISOString() : <any>undefined;
+        if (Array.isArray(this.references)) {
+            data["references"] = [];
+            for (let item of this.references)
+                data["references"].push(item);
+        }
+        data["inReplyTo"] = this.inReplyTo;
+        data["messageId"] = this.messageId;
+        data["resentMessageId"] = this.resentMessageId;
+        data["mimeVersion"] = this.mimeVersion;
+        data["body"] = this.body ? this.body.toJSON() : <any>undefined;
+        data["textBody"] = this.textBody;
+        data["htmlBody"] = this.htmlBody;
+        if (Array.isArray(this.bodyParts)) {
+            data["bodyParts"] = [];
+            for (let item of this.bodyParts)
+                data["bodyParts"].push(item.toJSON());
+        }
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+/** A MIME message. */
+export interface IMimeMessage {
+    /** Get the list of headers. */
+    headers?: Header[] | undefined;
+    /** Get or set the value of the Importance header. */
+    importance?: MessageImportance;
+    /** Get or set the value of the Priority header. */
+    priority?: MessagePriority;
+    /** Get or set the value of the X-Priority header. */
+    xPriority?: XMessagePriority;
+    /** Get or set the address in the Sender header. */
+    sender?: MailboxAddress | undefined;
+    /** Get or set the address in the Resent-Sender header. */
+    resentSender?: MailboxAddress | undefined;
+    /** Get the list of addresses in the From header. */
+    from?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-From header. */
+    resentFrom?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Reply-To header. */
+    replyTo?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-Reply-To header. */
+    resentReplyTo?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the To header. */
+    to?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-To header. */
+    resentTo?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Cc header. */
+    cc?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-Cc header. */
+    resentCc?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Bcc header. */
+    bcc?: InternetAddress[] | undefined;
+    /** Get the list of addresses in the Resent-Bcc header. */
+    resentBcc?: InternetAddress[] | undefined;
+    /** Get or set the subject of the message. */
+    subject?: string | undefined;
+    /** Get or set the date of the message. */
+    date?: Date;
+    /** Get or set the Resent-Date of the message. */
+    resentDate?: Date;
+    /** Get the list of references to other messages. */
+    references?: string[] | undefined;
+    /** Get or set the Message-Id that this message is replying to. */
+    inReplyTo?: string | undefined;
+    /** Get or set the message identifier. */
+    messageId?: string | undefined;
+    /** Get or set the Resent-Message-Id header. */
+    resentMessageId?: string | undefined;
+    /** Get or set the MIME-Version. */
+    mimeVersion?: string | undefined;
+    /** Get or set the body of the message. */
+    body?: MimeEntity | undefined;
+    /** Get the text body of the message if it exists. */
+    textBody?: string | undefined;
+    /** Get the html body of the message if it exists. */
+    htmlBody?: string | undefined;
+    /** Get the body parts of the message. */
+    bodyParts?: MimeEntity[] | undefined;
+    /** Get the attachments. */
+    attachments?: MimeEntity[] | undefined;
+}
+
+/** A class representing a Message or MIME header. */
+export class Header implements IHeader {
+    /** Get the stream offset of the beginning of the header. */
+    offset?: number | undefined;
+    /** Get the name of the header field. */
+    field?: string | undefined;
+    /** Get the header identifier. */
+    id?: HeaderId;
+    /** Get the raw field name of the header. */
+    rawField?: string | undefined;
+    /** Get the raw value of the header. */
+    rawValue?: string | undefined;
+    /** Get or sets the header value. */
+    value?: string | undefined;
+
+    constructor(data?: IHeader) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.offset = _data["offset"];
+            this.field = _data["field"];
+            this.id = _data["id"];
+            this.rawField = _data["rawField"];
+            this.rawValue = _data["rawValue"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): Header {
+        data = typeof data === 'object' ? data : {};
+        let result = new Header();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["offset"] = this.offset;
+        data["field"] = this.field;
+        data["id"] = this.id;
+        data["rawField"] = this.rawField;
+        data["rawValue"] = this.rawValue;
+        data["value"] = this.value;
+        return data; 
+    }
+}
+
+/** A class representing a Message or MIME header. */
+export interface IHeader {
+    /** Get the stream offset of the beginning of the header. */
+    offset?: number | undefined;
+    /** Get the name of the header field. */
+    field?: string | undefined;
+    /** Get the header identifier. */
+    id?: HeaderId;
+    /** Get the raw field name of the header. */
+    rawField?: string | undefined;
+    /** Get the raw value of the header. */
+    rawValue?: string | undefined;
+    /** Get or sets the header value. */
+    value?: string | undefined;
+}
+
+/** An enumeration of common header fields. */
+export enum HeaderId {
+    AcceptLanguage = 0,
+    AdHoc = 1,
+    AlternateRecipient = 2,
+    ApparentlyTo = 3,
+    Approved = 4,
+    ArcAuthenticationResults = 5,
+    ArcMessageSignature = 6,
+    ArcSeal = 7,
+    Archive = 8,
+    ArchivedAt = 9,
+    Article = 10,
+    AuthenticationResults = 11,
+    Autocrypt = 12,
+    AutocryptGossip = 13,
+    AutocryptSetupMessage = 14,
+    Autoforwarded = 15,
+    AutoSubmitted = 16,
+    Autosubmitted = 17,
+    Base = 18,
+    Bcc = 19,
+    Body = 20,
+    Bytes = 21,
+    Cc = 22,
+    Comments = 23,
+    ContentAlternative = 24,
+    ContentBase = 25,
+    ContentClass = 26,
+    ContentDescription = 27,
+    ContentDisposition = 28,
+    ContentDuration = 29,
+    ContentFeatures = 30,
+    ContentId = 31,
+    ContentIdentifier = 32,
+    ContentLanguage = 33,
+    ContentLength = 34,
+    ContentLocation = 35,
+    ContentMd5 = 36,
+    ContentReturn = 37,
+    ContentTransferEncoding = 38,
+    ContentTranslationType = 39,
+    ContentType = 40,
+    Control = 41,
+    Conversion = 42,
+    ConversionWithLoss = 43,
+    Date = 44,
+    DateReceived = 45,
+    DeferredDelivery = 46,
+    DeliveryDate = 47,
+    DiscloseRecipients = 48,
+    DispositionNotificationOptions = 49,
+    DispositionNotificationTo = 50,
+    Distribution = 51,
+    DkimSignature = 52,
+    DomainKeySignature = 53,
+    Encoding = 54,
+    Encrypted = 55,
+    Expires = 56,
+    ExpiryDate = 57,
+    FollowupTo = 58,
+    From = 59,
+    GenerateDeliveryReport = 60,
+    Importance = 61,
+    InjectionDate = 62,
+    InjectionInfo = 63,
+    InReplyTo = 64,
+    Keywords = 65,
+    Language = 66,
+    LatestDeliveryTime = 67,
+    Lines = 68,
+    ListArchive = 69,
+    ListHelp = 70,
+    ListId = 71,
+    ListOwner = 72,
+    ListPost = 73,
+    ListSubscribe = 74,
+    ListUnsubscribe = 75,
+    ListUnsubscribePost = 76,
+    MessageId = 77,
+    MimeVersion = 78,
+    Newsgroups = 79,
+    NntpPostingHost = 80,
+    Organization = 81,
+    OriginalFrom = 82,
+    OriginalMessageId = 83,
+    OriginalRecipient = 84,
+    OriginalReturnAddress = 85,
+    OriginalSubject = 86,
+    Path = 87,
+    Precedence = 88,
+    PreventNonDeliveryReport = 89,
+    Priority = 90,
+    Received = 91,
+    ReceivedSPF = 92,
+    References = 93,
+    RelayVersion = 94,
+    ReplyBy = 95,
+    ReplyTo = 96,
+    RequireRecipientValidSince = 97,
+    ResentBcc = 98,
+    ResentCc = 99,
+    ResentDate = 100,
+    ResentFrom = 101,
+    ResentMessageId = 102,
+    ResentReplyTo = 103,
+    ResentSender = 104,
+    ResentTo = 105,
+    ReturnPath = 106,
+    ReturnReceiptTo = 107,
+    SeeAlso = 108,
+    Sender = 109,
+    Sensitivity = 110,
+    Solicitation = 111,
+    Status = 112,
+    Subject = 113,
+    Summary = 114,
+    Supersedes = 115,
+    TLSRequired = 116,
+    To = 117,
+    UserAgent = 118,
+    X400ContentIdentifier = 119,
+    X400ContentReturn = 120,
+    X400ContentType = 121,
+    X400MTSIdentifier = 122,
+    X400Originator = 123,
+    X400Received = 124,
+    X400Recipients = 125,
+    X400Trace = 126,
+    XMailer = 127,
+    XMSMailPriority = 128,
+    XPriority = 129,
+    XStatus = 130,
+    Unknown = -1,
+}
+
+/** An enumeration of message importance values. */
+export enum MessageImportance {
+    Low = 0,
+    Normal = 1,
+    High = 2,
+}
+
+/** An enumeration of message priority values. */
+export enum MessagePriority {
+    NonUrgent = 0,
+    Normal = 1,
+    Urgent = 2,
+}
+
+/** An enumeration of X-Priority header values. */
+export enum XMessagePriority {
+    Highest = 1,
+    High = 2,
+    Normal = 3,
+    Low = 4,
+    Lowest = 5,
+}
+
+/** An abstract internet address, as specified by rfc0822. */
+export abstract class InternetAddress implements IInternetAddress {
+    /** Get or set the character encoding to use when encoding the name of the address. */
+    encoding?: Encoding | undefined;
+    /** Get or set the display name of the address. */
+    name?: string | undefined;
+
+    constructor(data?: IInternetAddress) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.encoding = _data["encoding"] ? Encoding.fromJS(_data["encoding"]) : <any>undefined;
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): InternetAddress {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'InternetAddress' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["encoding"] = this.encoding ? this.encoding.toJSON() : <any>undefined;
+        data["name"] = this.name;
+        return data; 
+    }
+}
+
+/** An abstract internet address, as specified by rfc0822. */
+export interface IInternetAddress {
+    /** Get or set the character encoding to use when encoding the name of the address. */
+    encoding?: Encoding | undefined;
+    /** Get or set the display name of the address. */
+    name?: string | undefined;
+}
+
+/** A mailbox address, as specified by rfc822. */
+export class MailboxAddress extends InternetAddress implements IMailboxAddress {
+    /** Get the mailbox route. */
+    route?: string[] | undefined;
+    /** Get or set the mailbox address. */
+    address?: string | undefined;
+    /** Get the local-part of the email address. */
+    localPart?: string | undefined;
+    /** Get the domain of the email address. */
+    domain?: string | undefined;
+    /** Get whether or not the address is an international address. */
+    isInternational?: boolean;
+
+    constructor(data?: IMailboxAddress) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["route"])) {
+                this.route = [] as any;
+                for (let item of _data["route"])
+                    this.route!.push(item);
+            }
+            this.address = _data["address"];
+            this.localPart = _data["localPart"];
+            this.domain = _data["domain"];
+            this.isInternational = _data["isInternational"];
+        }
+    }
+
+    static fromJS(data: any): MailboxAddress {
+        data = typeof data === 'object' ? data : {};
+        let result = new MailboxAddress();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.route)) {
+            data["route"] = [];
+            for (let item of this.route)
+                data["route"].push(item);
+        }
+        data["address"] = this.address;
+        data["localPart"] = this.localPart;
+        data["domain"] = this.domain;
+        data["isInternational"] = this.isInternational;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+/** A mailbox address, as specified by rfc822. */
+export interface IMailboxAddress extends IInternetAddress {
+    /** Get the mailbox route. */
+    route?: string[] | undefined;
+    /** Get or set the mailbox address. */
+    address?: string | undefined;
+    /** Get the local-part of the email address. */
+    localPart?: string | undefined;
+    /** Get the domain of the email address. */
+    domain?: string | undefined;
+    /** Get whether or not the address is an international address. */
+    isInternational?: boolean;
+}
+
+export abstract class Encoding implements IEncoding {
+    bodyName?: string;
+    encodingName?: string;
+    headerName?: string;
+    webName?: string;
+    windowsCodePage?: number;
+    isBrowserDisplay?: boolean;
+    isBrowserSave?: boolean;
+    isMailNewsDisplay?: boolean;
+    isMailNewsSave?: boolean;
+    isSingleByte?: boolean;
+    encoderFallback?: EncoderFallback;
+    decoderFallback?: DecoderFallback;
+    isReadOnly?: boolean;
+    codePage?: number;
+
+    constructor(data?: IEncoding) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bodyName = _data["bodyName"];
+            this.encodingName = _data["encodingName"];
+            this.headerName = _data["headerName"];
+            this.webName = _data["webName"];
+            this.windowsCodePage = _data["windowsCodePage"];
+            this.isBrowserDisplay = _data["isBrowserDisplay"];
+            this.isBrowserSave = _data["isBrowserSave"];
+            this.isMailNewsDisplay = _data["isMailNewsDisplay"];
+            this.isMailNewsSave = _data["isMailNewsSave"];
+            this.isSingleByte = _data["isSingleByte"];
+            this.encoderFallback = _data["encoderFallback"] ? EncoderFallback.fromJS(_data["encoderFallback"]) : <any>undefined;
+            this.decoderFallback = _data["decoderFallback"] ? DecoderFallback.fromJS(_data["decoderFallback"]) : <any>undefined;
+            this.isReadOnly = _data["isReadOnly"];
+            this.codePage = _data["codePage"];
+        }
+    }
+
+    static fromJS(data: any): Encoding {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'Encoding' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bodyName"] = this.bodyName;
+        data["encodingName"] = this.encodingName;
+        data["headerName"] = this.headerName;
+        data["webName"] = this.webName;
+        data["windowsCodePage"] = this.windowsCodePage;
+        data["isBrowserDisplay"] = this.isBrowserDisplay;
+        data["isBrowserSave"] = this.isBrowserSave;
+        data["isMailNewsDisplay"] = this.isMailNewsDisplay;
+        data["isMailNewsSave"] = this.isMailNewsSave;
+        data["isSingleByte"] = this.isSingleByte;
+        data["encoderFallback"] = this.encoderFallback ? this.encoderFallback.toJSON() : <any>undefined;
+        data["decoderFallback"] = this.decoderFallback ? this.decoderFallback.toJSON() : <any>undefined;
+        data["isReadOnly"] = this.isReadOnly;
+        data["codePage"] = this.codePage;
+        return data; 
+    }
+}
+
+export interface IEncoding {
+    bodyName?: string;
+    encodingName?: string;
+    headerName?: string;
+    webName?: string;
+    windowsCodePage?: number;
+    isBrowserDisplay?: boolean;
+    isBrowserSave?: boolean;
+    isMailNewsDisplay?: boolean;
+    isMailNewsSave?: boolean;
+    isSingleByte?: boolean;
+    encoderFallback?: EncoderFallback;
+    decoderFallback?: DecoderFallback;
+    isReadOnly?: boolean;
+    codePage?: number;
+}
+
+export abstract class EncoderFallback implements IEncoderFallback {
+
+    constructor(data?: IEncoderFallback) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): EncoderFallback {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'EncoderFallback' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+}
+
+export interface IEncoderFallback {
+}
+
+export abstract class DecoderFallback implements IDecoderFallback {
+
+    constructor(data?: IDecoderFallback) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): DecoderFallback {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'DecoderFallback' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+}
+
+export interface IDecoderFallback {
+}
+
+/** An abstract MIME entity. */
+export abstract class MimeEntity implements IMimeEntity {
+    /** Get the list of headers. */
+    headers?: Header[] | undefined;
+    /** Get or set the content disposition. */
+    contentDisposition?: ContentDisposition | undefined;
+    /** Get the type of the content. */
+    contentType?: ContentType | undefined;
+    /** Get or set the base content URI. */
+    contentBase?: string | undefined;
+    /** Get or set the content location. */
+    contentLocation?: string | undefined;
+    /** Get or set the content identifier. */
+    contentId?: string | undefined;
+    /** Get a value indicating whether this MimePart is an attachment. */
+    isAttachment?: boolean;
+
+    constructor(data?: IMimeEntity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["headers"])) {
+                this.headers = [] as any;
+                for (let item of _data["headers"])
+                    this.headers!.push(Header.fromJS(item));
+            }
+            this.contentDisposition = _data["contentDisposition"] ? ContentDisposition.fromJS(_data["contentDisposition"]) : <any>undefined;
+            this.contentType = _data["contentType"] ? ContentType.fromJS(_data["contentType"]) : <any>undefined;
+            this.contentBase = _data["contentBase"];
+            this.contentLocation = _data["contentLocation"];
+            this.contentId = _data["contentId"];
+            this.isAttachment = _data["isAttachment"];
+        }
+    }
+
+    static fromJS(data: any): MimeEntity {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'MimeEntity' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.headers)) {
+            data["headers"] = [];
+            for (let item of this.headers)
+                data["headers"].push(item.toJSON());
+        }
+        data["contentDisposition"] = this.contentDisposition ? this.contentDisposition.toJSON() : <any>undefined;
+        data["contentType"] = this.contentType ? this.contentType.toJSON() : <any>undefined;
+        data["contentBase"] = this.contentBase;
+        data["contentLocation"] = this.contentLocation;
+        data["contentId"] = this.contentId;
+        data["isAttachment"] = this.isAttachment;
+        return data; 
+    }
+}
+
+/** An abstract MIME entity. */
+export interface IMimeEntity {
+    /** Get the list of headers. */
+    headers?: Header[] | undefined;
+    /** Get or set the content disposition. */
+    contentDisposition?: ContentDisposition | undefined;
+    /** Get the type of the content. */
+    contentType?: ContentType | undefined;
+    /** Get or set the base content URI. */
+    contentBase?: string | undefined;
+    /** Get or set the content location. */
+    contentLocation?: string | undefined;
+    /** Get or set the content identifier. */
+    contentId?: string | undefined;
+    /** Get a value indicating whether this MimePart is an attachment. */
+    isAttachment?: boolean;
+}
+
+/** A class representing a Content-Disposition header value. */
+export class ContentDisposition implements IContentDisposition {
+    /** Get or set the disposition. */
+    disposition?: string | undefined;
+    /** Get or set a value indicating whether the MimePart is an attachment. */
+    isAttachment?: boolean;
+    /** Get the list of parameters on the ContentDisposition. */
+    parameters?: Parameter[] | undefined;
+    /** Get or set the name of the file. */
+    fileName?: string | undefined;
+    /** Get or set the creation-date parameter. */
+    creationDate?: Date | undefined;
+    /** Get or set the modification-date parameter. */
+    modificationDate?: Date | undefined;
+    /** Get or set the read-date parameter. */
+    readDate?: Date | undefined;
+    /** Get or set the size parameter. */
+    size?: number | undefined;
+
+    constructor(data?: IContentDisposition) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.disposition = _data["disposition"];
+            this.isAttachment = _data["isAttachment"];
+            if (Array.isArray(_data["parameters"])) {
+                this.parameters = [] as any;
+                for (let item of _data["parameters"])
+                    this.parameters!.push(Parameter.fromJS(item));
+            }
+            this.fileName = _data["fileName"];
+            this.creationDate = _data["creationDate"] ? new Date(_data["creationDate"].toString()) : <any>undefined;
+            this.modificationDate = _data["modificationDate"] ? new Date(_data["modificationDate"].toString()) : <any>undefined;
+            this.readDate = _data["readDate"] ? new Date(_data["readDate"].toString()) : <any>undefined;
+            this.size = _data["size"];
+        }
+    }
+
+    static fromJS(data: any): ContentDisposition {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContentDisposition();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["disposition"] = this.disposition;
+        data["isAttachment"] = this.isAttachment;
+        if (Array.isArray(this.parameters)) {
+            data["parameters"] = [];
+            for (let item of this.parameters)
+                data["parameters"].push(item.toJSON());
+        }
+        data["fileName"] = this.fileName;
+        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : <any>undefined;
+        data["modificationDate"] = this.modificationDate ? this.modificationDate.toISOString() : <any>undefined;
+        data["readDate"] = this.readDate ? this.readDate.toISOString() : <any>undefined;
+        data["size"] = this.size;
+        return data; 
+    }
+}
+
+/** A class representing a Content-Disposition header value. */
+export interface IContentDisposition {
+    /** Get or set the disposition. */
+    disposition?: string | undefined;
+    /** Get or set a value indicating whether the MimePart is an attachment. */
+    isAttachment?: boolean;
+    /** Get the list of parameters on the ContentDisposition. */
+    parameters?: Parameter[] | undefined;
+    /** Get or set the name of the file. */
+    fileName?: string | undefined;
+    /** Get or set the creation-date parameter. */
+    creationDate?: Date | undefined;
+    /** Get or set the modification-date parameter. */
+    modificationDate?: Date | undefined;
+    /** Get or set the read-date parameter. */
+    readDate?: Date | undefined;
+    /** Get or set the size parameter. */
+    size?: number | undefined;
+}
+
+/** A header parameter as found in the Content-Type and Content-Disposition headers. */
+export class Parameter implements IParameter {
+    /** Get the parameter name. */
+    name?: string | undefined;
+    /** Get or set the parameter value character encoding. */
+    encoding?: Encoding | undefined;
+    /** Get or set the parameter encoding method to use. */
+    encodingMethod?: ParameterEncodingMethod;
+    /** Get or set whether the parameter value should always be quoted even if it normally wouldn't need to be. */
+    alwaysQuote?: boolean;
+    /** Get or set the parameter value. */
+    value?: string | undefined;
+
+    constructor(data?: IParameter) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.encoding = _data["encoding"] ? Encoding.fromJS(_data["encoding"]) : <any>undefined;
+            this.encodingMethod = _data["encodingMethod"];
+            this.alwaysQuote = _data["alwaysQuote"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): Parameter {
+        data = typeof data === 'object' ? data : {};
+        let result = new Parameter();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["encoding"] = this.encoding ? this.encoding.toJSON() : <any>undefined;
+        data["encodingMethod"] = this.encodingMethod;
+        data["alwaysQuote"] = this.alwaysQuote;
+        data["value"] = this.value;
+        return data; 
+    }
+}
+
+/** A header parameter as found in the Content-Type and Content-Disposition headers. */
+export interface IParameter {
+    /** Get the parameter name. */
+    name?: string | undefined;
+    /** Get or set the parameter value character encoding. */
+    encoding?: Encoding | undefined;
+    /** Get or set the parameter encoding method to use. */
+    encodingMethod?: ParameterEncodingMethod;
+    /** Get or set whether the parameter value should always be quoted even if it normally wouldn't need to be. */
+    alwaysQuote?: boolean;
+    /** Get or set the parameter value. */
+    value?: string | undefined;
+}
+
+/** The method to use for encoding Content-Type and Content-Disposition parameter values. */
+export enum ParameterEncodingMethod {
+    Default = 0,
+    Rfc2231 = 1,
+    Rfc2047 = 2,
+}
+
+/** A class representing a Content-Type header value. */
+export class ContentType implements IContentType {
+    /** Get or set the type of the media. */
+    mediaType?: string | undefined;
+    /** Get or set the media subtype. */
+    mediaSubtype?: string | undefined;
+    /** Get the list of parameters on the ContentType. */
+    parameters?: Parameter[] | undefined;
+    /** Get or set the boundary parameter. */
+    boundary?: string | undefined;
+    /** Get or set the charset parameter. */
+    charset?: string | undefined;
+    /** Get or set the charset parameter as an Encoding. */
+    charsetEncoding?: Encoding | undefined;
+    /** Get or set the format parameter. */
+    format?: string | undefined;
+    /** Get the simple mime-type. */
+    mimeType?: string | undefined;
+    /** Get or set the name parameter. */
+    name?: string | undefined;
+
+    constructor(data?: IContentType) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.mediaType = _data["mediaType"];
+            this.mediaSubtype = _data["mediaSubtype"];
+            if (Array.isArray(_data["parameters"])) {
+                this.parameters = [] as any;
+                for (let item of _data["parameters"])
+                    this.parameters!.push(Parameter.fromJS(item));
+            }
+            this.boundary = _data["boundary"];
+            this.charset = _data["charset"];
+            this.charsetEncoding = _data["charsetEncoding"] ? Encoding.fromJS(_data["charsetEncoding"]) : <any>undefined;
+            this.format = _data["format"];
+            this.mimeType = _data["mimeType"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): ContentType {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContentType();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mediaType"] = this.mediaType;
+        data["mediaSubtype"] = this.mediaSubtype;
+        if (Array.isArray(this.parameters)) {
+            data["parameters"] = [];
+            for (let item of this.parameters)
+                data["parameters"].push(item.toJSON());
+        }
+        data["boundary"] = this.boundary;
+        data["charset"] = this.charset;
+        data["charsetEncoding"] = this.charsetEncoding ? this.charsetEncoding.toJSON() : <any>undefined;
+        data["format"] = this.format;
+        data["mimeType"] = this.mimeType;
+        data["name"] = this.name;
+        return data; 
+    }
+}
+
+/** A class representing a Content-Type header value. */
+export interface IContentType {
+    /** Get or set the type of the media. */
+    mediaType?: string | undefined;
+    /** Get or set the media subtype. */
+    mediaSubtype?: string | undefined;
+    /** Get the list of parameters on the ContentType. */
+    parameters?: Parameter[] | undefined;
+    /** Get or set the boundary parameter. */
+    boundary?: string | undefined;
+    /** Get or set the charset parameter. */
+    charset?: string | undefined;
+    /** Get or set the charset parameter as an Encoding. */
+    charsetEncoding?: Encoding | undefined;
+    /** Get or set the format parameter. */
+    format?: string | undefined;
+    /** Get the simple mime-type. */
+    mimeType?: string | undefined;
+    /** Get or set the name parameter. */
+    name?: string | undefined;
 }
 
 export class SwaggerException extends Error {

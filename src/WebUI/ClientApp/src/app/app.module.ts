@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -17,6 +17,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { HttpSpinnerInterceptor } from "./Shared/Interceptors/http-spinner-interceptor";
 import { UserModule } from './user/user.module';
 import { ToastrModule } from "ngx-toastr";
+import { appInitializer } from "./Shared/Helpers/app.initializer";
+import { UserAuthService } from "./Shared/Services/Auth/user-auth.service";
+import { JwtTokenStorageService } from "./Shared/Services/Auth/jwt-token-storage.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,6 +37,7 @@ import { ToastrModule } from "ngx-toastr";
     UserModule,
   ],
   providers: [
+     { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [UserAuthService, JwtTokenStorageService] },
     {
       provide: API_BASE_URL,
       useFactory: () => {

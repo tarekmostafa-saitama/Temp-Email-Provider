@@ -40,6 +40,8 @@ export class LoginComponent implements OnInit {
       .subscribe((x) => {
         if(x.isSuccess){
           this.jwtTokenStorageService.SetAuthTokens(x);
+          this.userAuthService.startRefreshTokenTimer();
+
           this.toastrService.Success("","Success Login Proccess");
           this.router.navigate(["/user/home"]);
         }else{
