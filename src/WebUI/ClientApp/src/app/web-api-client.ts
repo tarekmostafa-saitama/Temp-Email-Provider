@@ -190,6 +190,127 @@ export class AccountClient implements IAccountClient {
     }
 }
 
+export interface IMailboxClient {
+    create(): Observable<CreateMailBoxResponseModel>;
+    getAllMessages(name: string | null, token: string | null): Observable<GetMailBoxMailsResponseModel>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class MailboxClient implements IMailboxClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    create() : Observable<CreateMailBoxResponseModel> {
+        let url_ = this.baseUrl + "/api/Mailbox/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<CreateMailBoxResponseModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CreateMailBoxResponseModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<CreateMailBoxResponseModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateMailBoxResponseModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CreateMailBoxResponseModel>(<any>null);
+    }
+
+    getAllMessages(name: string | null, token: string | null) : Observable<GetMailBoxMailsResponseModel> {
+        let url_ = this.baseUrl + "/api/Mailbox/GetAllMessages/{name}/{token}";
+        if (name === undefined || name === null)
+            throw new Error("The parameter 'name' must be defined.");
+        url_ = url_.replace("{name}", encodeURIComponent("" + name));
+        if (token === undefined || token === null)
+            throw new Error("The parameter 'token' must be defined.");
+        url_ = url_.replace("{token}", encodeURIComponent("" + token));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllMessages(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllMessages(<any>response_);
+                } catch (e) {
+                    return <Observable<GetMailBoxMailsResponseModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetMailBoxMailsResponseModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllMessages(response: HttpResponseBase): Observable<GetMailBoxMailsResponseModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetMailBoxMailsResponseModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetMailBoxMailsResponseModel>(<any>null);
+    }
+}
+
 export class AuthenticateResponse implements IAuthenticateResponse {
     isSuccess?: boolean;
     error?: string | undefined;
@@ -365,6 +486,242 @@ export interface IRegisterUserRequest {
 export enum Role {
     User = 0,
     Admin = 1,
+}
+
+export class CreateMailBoxResponseModel implements ICreateMailBoxResponseModel {
+    success?: boolean;
+    errors?: ErrorRepresentation[] | undefined;
+    result?: CreateResultModel | undefined;
+
+    constructor(data?: ICreateMailBoxResponseModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(ErrorRepresentation.fromJS(item));
+            }
+            this.result = _data["result"] ? CreateResultModel.fromJS(_data["result"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateMailBoxResponseModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMailBoxResponseModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item.toJSON());
+        }
+        data["result"] = this.result ? this.result.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ICreateMailBoxResponseModel {
+    success?: boolean;
+    errors?: ErrorRepresentation[] | undefined;
+    result?: CreateResultModel | undefined;
+}
+
+export class ErrorRepresentation implements IErrorRepresentation {
+    code?: string | undefined;
+    message?: string | undefined;
+    detail?: string | undefined;
+
+    constructor(data?: IErrorRepresentation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.code = _data["code"];
+            this.message = _data["message"];
+            this.detail = _data["detail"];
+        }
+    }
+
+    static fromJS(data: any): ErrorRepresentation {
+        data = typeof data === 'object' ? data : {};
+        let result = new ErrorRepresentation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["code"] = this.code;
+        data["message"] = this.message;
+        data["detail"] = this.detail;
+        return data; 
+    }
+}
+
+export interface IErrorRepresentation {
+    code?: string | undefined;
+    message?: string | undefined;
+    detail?: string | undefined;
+}
+
+export class CreateResultModel implements ICreateResultModel {
+    name?: string | undefined;
+    token?: string | undefined;
+
+    constructor(data?: ICreateResultModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.token = _data["token"];
+        }
+    }
+
+    static fromJS(data: any): CreateResultModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateResultModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["token"] = this.token;
+        return data; 
+    }
+}
+
+export interface ICreateResultModel {
+    name?: string | undefined;
+    token?: string | undefined;
+}
+
+export class GetMailBoxMailsResponseModel implements IGetMailBoxMailsResponseModel {
+    success?: boolean;
+    errors?: ErrorRepresentation[] | undefined;
+    result?: KeyValuePairOfStringAndString[] | undefined;
+
+    constructor(data?: IGetMailBoxMailsResponseModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(ErrorRepresentation.fromJS(item));
+            }
+            if (Array.isArray(_data["result"])) {
+                this.result = [] as any;
+                for (let item of _data["result"])
+                    this.result!.push(KeyValuePairOfStringAndString.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetMailBoxMailsResponseModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetMailBoxMailsResponseModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item.toJSON());
+        }
+        if (Array.isArray(this.result)) {
+            data["result"] = [];
+            for (let item of this.result)
+                data["result"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IGetMailBoxMailsResponseModel {
+    success?: boolean;
+    errors?: ErrorRepresentation[] | undefined;
+    result?: KeyValuePairOfStringAndString[] | undefined;
+}
+
+export class KeyValuePairOfStringAndString implements IKeyValuePairOfStringAndString {
+    key?: string;
+    value?: string;
+
+    constructor(data?: IKeyValuePairOfStringAndString) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): KeyValuePairOfStringAndString {
+        data = typeof data === 'object' ? data : {};
+        let result = new KeyValuePairOfStringAndString();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key;
+        data["value"] = this.value;
+        return data; 
+    }
+}
+
+export interface IKeyValuePairOfStringAndString {
+    key?: string;
+    value?: string;
 }
 
 export class SwaggerException extends Error {

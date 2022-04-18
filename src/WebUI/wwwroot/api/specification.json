@@ -101,6 +101,68 @@
           }
         }
       }
+    },
+    "/api/Mailbox/Create": {
+      "post": {
+        "tags": [
+          "Mailbox"
+        ],
+        "operationId": "Mailbox_Create",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMailBoxResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Mailbox/GetAllMessages/{name}/{token}": {
+      "get": {
+        "tags": [
+          "Mailbox"
+        ],
+        "operationId": "Mailbox_GetAllMessages",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMailBoxMailsResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -182,6 +244,97 @@
           0,
           1
         ]
+      },
+      "CreateMailBoxResponseModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ErrorRepresentation"
+            }
+          },
+          "result": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CreateResultModel"
+              }
+            ]
+          }
+        }
+      },
+      "ErrorRepresentation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateResultModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "GetMailBoxMailsResponseModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ErrorRepresentation"
+            }
+          },
+          "result": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KeyValuePairOfStringAndString"
+            }
+          }
+        }
+      },
+      "KeyValuePairOfStringAndString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
       }
     },
     "securitySchemes": {

@@ -13,6 +13,7 @@ public class AccountController : ApiControllerBase
         var result = await Mediator.Send(new LoginUserCommand(model));
         return Ok(result);
     }
+   
     [Route("api/Account/Refresh-Token")]
     [HttpPost]
     public async Task<ActionResult<AuthenticateResponse>> RefreshToken(RefreshRequest model)

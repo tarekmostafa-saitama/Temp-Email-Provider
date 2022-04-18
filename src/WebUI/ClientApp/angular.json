@@ -18,16 +18,23 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "progress": true,
+            "allowedCommonJsDependencies": ["crypto"],
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": [
-              "src/assets"
+            "assets": ["src/assets"],
+            "styles": [
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/assets/css/vendor.min.css",
+              "src/assets/css/app.min.css"
             ],
-            "styles": ["node_modules/ngx-spinner/animations/ball-scale-multiple.css","node_modules/ngx-toastr/toastr.css","src/assets/css/vendor.min.css", "src/assets/css/app.min.css"],
-            "scripts": ["src/assets/js/vendor.min.js", "src/assets/js/app.min.js"],
+            "scripts": [
+              "src/assets/js/vendor.min.js",
+              "src/assets/js/app.min.js"
+            ],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,

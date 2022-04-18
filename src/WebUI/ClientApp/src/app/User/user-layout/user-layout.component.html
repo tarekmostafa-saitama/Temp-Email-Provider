@@ -207,10 +207,11 @@
                         <span class="menu-text">Dashboard</span>
                     </a>
                 </div>
-                <div class="menu-item active">
-                    <a href="analytics.html" class="menu-link">
-                        <span class="menu-icon"><i class="bi bi-bar-chart"></i></span>
-                        <span class="menu-text">Analytics</span>
+                <div class="menu-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+                    <a  routerLink="/user/generate-mail"  
+                     class="menu-link">
+                        <span class="menu-icon"><i class="bi bi-envelope-check"></i></span>
+                        <span class="menu-text">Generate Mail</span>
                     </a>
                 </div>
                
