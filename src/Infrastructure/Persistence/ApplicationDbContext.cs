@@ -32,6 +32,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     
 
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<MailBox> MailBoxes { get; set; }
+    public DbSet<MailRefreshRequest> MailRefreshRequests { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {

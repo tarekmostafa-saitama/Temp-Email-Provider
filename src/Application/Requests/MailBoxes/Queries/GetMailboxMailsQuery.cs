@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Application.Requests.MailBoxes.Models;
+﻿using CleanArchitecture.Application.Requests.MailBoxes.Commands;
+using CleanArchitecture.Application.Requests.MailBoxes.Models;
 using MediatR;
 using MimeKit;
 using Newtonsoft.Json;
@@ -42,16 +43,20 @@ public class GetMailboxMailsQueryHandler : IRequestHandler<GetMailboxMailsQuery,
 
         if (mailsObject.Success)
         {
+            mailsObject.ParsedResult = new List<KeyValuePair<string, MailMessage>>();
             foreach (var pair in mailsObject.Result)
             {
                 using (var stream = GenerateStreamFromString(pair.Value))
                 {
                     var message = await MimeMessage.LoadAsync(stream, cancellationToken);
-                    mailsObject.ParsedResult.Add(new KeyValuePair<string, MimeMessage>(pair.Key, message));
+                    
+                    mailsObject.ParsedResult.Add(new KeyValuePair<string, MailMessage>(pair.Key, new MailMessage(message)));
 
                 }
             }
         }
+
+        await _sender.Send(new CreateMailRefreshRequestCommand(requestQuery.Name, mailsObject.ParsedResult.Count), cancellationToken);
         return mailsObject;
     }
     private static Stream GenerateStreamFromString(string s)

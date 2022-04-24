@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CreateMailBoxResponseModel, MailboxClient } from 'src/app/web-api-client';
+import { CreateMailBoxResponseModel, GetMailBoxMailsResponseModel, MailboxClient, MailMessage } from 'src/app/web-api-client';
 import { MailboxService } from '../Shared/Services/mailbox.service';
 
 @Component({
@@ -9,30 +9,36 @@ import { MailboxService } from '../Shared/Services/mailbox.service';
 })
 export class GenerateMailComponent implements OnInit {
   createMailBoxResponseModel: CreateMailBoxResponseModel;
-
+  getMailBoxMailsResponseModel: GetMailBoxMailsResponseModel;
+  currentSelectedMail: MailMessage;
   constructor(private mailboxService: MailboxService) {
-    this.createMailBoxResponseModel= new CreateMailBoxResponseModel();
+    this.createMailBoxResponseModel = new CreateMailBoxResponseModel();
+    this.getMailBoxMailsResponseModel = new GetMailBoxMailsResponseModel();
   }
 
   ngOnInit() {
-    this.mailboxService.CreateMailBox().subscribe(x=>{
-      if(x.success){
+    this.mailboxService.CreateMailBox().subscribe((x) => {
+      if (x.success) {
         this.createMailBoxResponseModel = x;
-     
-      }else{
-
+      } else {
       }
-    })
+    });
   }
 
-  public getAllMessages(){
+  public getAllMessages() {
     this.mailboxService
       .GetMailBoxMessages(
         this.createMailBoxResponseModel.result.token,
         this.createMailBoxResponseModel.result.name
       )
       .subscribe((x) => {
-        console.log(x);
+        if (x.success) {
+          this.getMailBoxMailsResponseModel = x;
+        }
       });
+  }
+
+  public selectCurrentMail(key) {
+    this.currentSelectedMail = this.getMailBoxMailsResponseModel.parsedResult.find(x=>x.key == key).value;
   }
 }
