@@ -22,10 +22,10 @@ public class AccessTokenService : IAccessTokenService
     {
         List<Claim> claims = new()
         {
-            new Claim("Id", user.Id),
-            new Claim("FullName", user.FullName ?? "Demo"),
-            new Claim("Email", user.Email),
-            new Claim("Role", _userManager.GetRolesAsync(user).Result.First()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.FullName ?? "Demo"),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, _userManager.GetRolesAsync(user).Result.First()),
         };
         return _tokenGenerator.Generate(_jwtSettings.AccessTokenSecret, _jwtSettings.Issuer, _jwtSettings.Audience,
             _jwtSettings.AccessTokenExpirationMinutes, claims);

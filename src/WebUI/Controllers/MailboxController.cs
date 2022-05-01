@@ -25,6 +25,7 @@ public class MailboxController : ApiControllerBase
     public async Task<ActionResult<CreateMailBoxResponseModel>> Create()
     {
         var result = await Mediator.Send(new CreateMailBoxCommand());
+        var user = HttpContext.User;
         return Ok(result);
     }
     [Route("api/Mailbox/GetAllMessages/{name}/{token}")]
