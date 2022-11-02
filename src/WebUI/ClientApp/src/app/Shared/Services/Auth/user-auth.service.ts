@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { AccountClient, AuthenticateResponse, LoginUserRequest, RefreshRequest, RegisterUserRequest } from 'src/app/web-api-client';
 import { JwtTokenStorageService } from './jwt-token-storage.service';
 
+
 @Injectable({
   providedIn: "root",
 })
@@ -34,6 +35,7 @@ export class UserAuthService {
   ): Observable<AuthenticateResponse> {
     return this.accountClient.register(model);
   }
+
 
   // helper methods
 
